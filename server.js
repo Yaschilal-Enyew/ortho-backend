@@ -19,7 +19,23 @@ connectDB();
 
 // Middlewares
 app.use(express.json())
-app.use(cors())
+const allowedOrigins = [
+  "http://localhost:5173",  // vite local
+  "http://localhost:3000",
+  "https://eotc-omega.vercel.app"
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true
+}));
+
 
 // api endpoints
 app.use('/api/user', userRouter)
