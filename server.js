@@ -18,23 +18,30 @@ connectDB();
 
 
 // Middlewares
-app.use(express.json())
+app.use(express.json());
+
 const allowedOrigins = [
-  "http://localhost:5173",  // vite local
-  "http://localhost:3000",
-  "https://eotc-omega.vercel.app"
+  "http://localhost:5173",          // Vite local (frontend)
+  "http://localhost:3000",          // Optional local
+  "https://eotc-omega.vercel.app",  // Main frontend
+  "https://eotc-admin.vercel.app"   // Admin panel
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // allow server-to-server & tools like Postman
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error("Blocked by CORS:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
   credentials: true
 }));
+
 
 
 // api endpoints
